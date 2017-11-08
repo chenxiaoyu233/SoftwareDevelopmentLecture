@@ -68,8 +68,12 @@ while(exist[cur]){\
 	}
 	void resize(){ // amortize O(1)
 		if(cntExist * factor <= length) return;
+
 		ULL newLength = 1;
 		while(newLength  <= cntElement) newLength *= factor;
+		newLength *= factor * factor; 
+		//保证装填因子不会太大，不然会导致算法变慢。
+
 		swap(length, newLength);
 
 		Value *tmpVal   = val;
