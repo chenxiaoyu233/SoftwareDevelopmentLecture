@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <cstdlib>
 using namespace std;
 typedef unsigned long long ULL;
 
@@ -50,8 +51,7 @@ while(exist[cur]){\
 	void insert(Key k, Value v){
 		ITERATION( break; )
 		key[cur] = k, val[cur] = v, exist[cur] = true;
-		++cntElement, ++cntExist;
-		resize();
+		++cntElement, ++cntExist, resize();
 	}
 	bool count(Key k){
 		ITERATION( return true; )
@@ -63,8 +63,7 @@ while(exist[cur]){\
 	}
 	void erase(Key k){
 		ITERATION( isDel[cur] = true; break; )
-		--cntElement;
-		resize();
+		--cntElement, resize();
 	}
 	void resize(){ // amortize O(1)
 		if(cntExist * factor <= length) return;
@@ -142,7 +141,7 @@ struct Collision1{ // 线性探测再散列
 	}
 };
 
-struct Collision2{
+struct Collision2{ //二次探测再散列
 	ULL i, sgn;
 	void init(){
 		sgn = i = 1;
@@ -155,7 +154,7 @@ struct Collision2{
 	}
 };
 
-struct Collision3{
+struct Collision3{ //再哈希
 	static const ULL mod1 = 12255871;
 	static const ULL mod2 = 21788233;
 	ULL cur;
@@ -179,16 +178,18 @@ struct Person{
 
 template <class StringToPerson, class NumberToPerson>
 void work(StringToPerson *name2per, NumberToPerson *num2per){
+	puts("Type \"help\" to get the useage of each command");
 	string op;
 	ULL num;
 	printf("~$ ");
 	while(cin >> op){
+		cin.ignore(INT_MAX, '\n');
 		if(op == "query"){
 			puts("What info would you like to use to query ? [name/number]");
-			printf("~$ "); cin >> op;
+			printf("~$ "); cin >> op;cin.ignore(INT_MAX, '\n');
 			if(op == "name"){
 				puts("Please input the name.");
-				printf("~$ "); cin >> op;
+				printf("~$ "); cin >> op;cin.ignore(INT_MAX, '\n');
 				bool flag = name2per -> count(op);
 				if(flag) {
 					puts("");
@@ -199,7 +200,7 @@ void work(StringToPerson *name2per, NumberToPerson *num2per){
 				} else  puts("This person doesn't exist");
 			}else if(op == "number"){
 				puts("Please input the number.");
-				printf("~$ "); cin >> num;
+				printf("~$ "); cin >> num;cin.ignore(INT_MAX, '\n');
 				bool flag = num2per -> count(num);
 				if(flag) {
 					puts("");
@@ -214,14 +215,14 @@ void work(StringToPerson *name2per, NumberToPerson *num2per){
 		} else if(op == "add"){
 			string name, address; ULL number;
 			puts("Please input the info of the person");
-			printf("~$    name: "); cin >> name;
-			printf("~$ address: "); cin >> address;
-			printf("~$  number: "); cin >> number;
+			printf("~$    name: "); cin >> name;cin.ignore(INT_MAX, '\n');
+			printf("~$ address: "); cin >> address;cin.ignore(INT_MAX, '\n');
+			printf("~$  number: "); cin >> number;cin.ignore(INT_MAX, '\n');
 			bool flag = name2per -> count(name);
 			if(flag){
 				puts("This Person is already exist.");
 				puts("What would you like to do next? [add/cover]");
-				printf("~$ "); cin >> op;
+				printf("~$ "); cin >> op;cin.ignore(INT_MAX, '\n');
 				if(op == "add"){
 					while(name2per -> count(name)) name += '*';
 					name2per -> insert(name, Person(name, address, number));
@@ -240,7 +241,7 @@ void work(StringToPerson *name2per, NumberToPerson *num2per){
 		} else if(op == "delete"){
 			string name;
 			puts("Please input the name of the person");
-			printf("~$ "); cin >> name;
+			printf("~$ "); cin >> name;cin.ignore(INT_MAX, '\n');
 			bool flag = name2per -> count(name);
 			if(flag){
 				ULL numTmp = (*name2per)[name].number;
@@ -260,7 +261,7 @@ void work(StringToPerson *name2per, NumberToPerson *num2per){
 		} else if(op == "save"){
 			string name;
 			puts("please input the file's name");
-			printf("~$"); cin >> name;
+			printf("~$"); cin >> name;cin.ignore(INT_MAX, '\n');
 			FILE *out = fopen(name.c_str(), "w");
 			fprintf(out, "%llu\n", num2per -> length);
 			for(int i = 0; i < num2per -> length; i++){
@@ -274,7 +275,7 @@ void work(StringToPerson *name2per, NumberToPerson *num2per){
 		} else if(op == "load"){
 			string name, address; ULL number;
 			puts("please input the file's name");
-			printf("~$ "); cin >> name;
+			printf("~$ "); cin >> name; cin.ignore(INT_MAX, '\n');
 			ifstream in(name.c_str(), ios::in);
 			ULL len; in >> len;
 			delete name2per; delete num2per;
@@ -298,8 +299,11 @@ void work(StringToPerson *name2per, NumberToPerson *num2per){
 			puts(" print: print the whole table");
 			puts("  save: save the current table to flie");
 			puts("  load: load table from file");
+			puts(" clear: clear the current window");
 			puts("  exit: exit the program");
 			puts("");
+		} else if(op == "clear"){
+			system("clear");
 		}
 
 		printf("~$ ");
@@ -315,15 +319,19 @@ void mainLoop(){
 	puts("-----------------------------");
 	printf("~$ ");
 	while(cin >> op){
+		cin.ignore(INT_MAX, '\n');
 		if(op == "init"){
 			puts("What's method you'd like to deal with collision ?");
-			puts("-1- 线性探测再散列");
-			puts("-2- 二次探测再散列");
-			puts("-3- 再哈希法");
-			printf("~$ "); cin >> kind;
+			kind = 0;
+			while(kind < 1 || kind > 3){
+				puts("-1- 线性探测再散列");
+				puts("-2- 二次探测再散列");
+				puts("-3- 再哈希法");
+				printf("~$ "); cin >> kind; cin.ignore(INT_MAX, '\n');
+			}
 
 			puts("What's the possible size of the table ?");
-			printf("~$ "); cin >> size;
+			printf("~$ "); cin >> size; cin.ignore(INT_MAX, '\n');
 
 			puts("Initial workspace.");
 			puts("Finish.");
@@ -331,15 +339,16 @@ void mainLoop(){
 #define WORK( Method ) \
 do{\
 	HashTable <string, Person, stringHash, Method> *t1\
-		= new HashTable<string, Person, stringHash, Method>(size * 2);\
+		= new HashTable<string, Person, stringHash, Method>(size * 3 * 3);\
 	HashTable <ULL, Person, numberHash, Method> *t2\
-		= new HashTable<ULL, Person, numberHash, Method>(size * 2);\
+		= new HashTable<ULL, Person, numberHash, Method>(size * 3 * 3);\
 	work(t1, t2);\
 	return;\
 }while(0)
 			if(kind == 1) WORK( Collision1 );
 			else if(kind == 2) WORK( Collision2 );
 			else WORK( Collision3 );
+#undef WORK
 		} else if(op == "exit") {
 			break;
 		}
@@ -350,3 +359,4 @@ int main(){
 	mainLoop();
 	return 0;
 }
+
