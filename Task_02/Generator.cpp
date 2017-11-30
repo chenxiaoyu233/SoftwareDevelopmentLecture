@@ -61,13 +61,13 @@ void build(int n, int m){
 			fa[fx] = fy;
 		}
 	}
-	int cnt = randint(1, 5);
+	int cnt = 1;
 	for(int i = 1; i <= cnt; i++){
 		int x = randint(2, n-1);
 		int y = randint(2, m-1);
 		w[x][y] = fStart;
 	}
-	cnt = randint(1, 5);
+	cnt = 1;
 	for(int i = 1; i <= cnt; i++){
 		int x = randint(2, n-1);
 		int y = randint(2, m-1);

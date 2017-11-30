@@ -63,9 +63,9 @@ void drawAns(){
 	glColor3f(1.0, 0, 0.0);
 	glLineWidth(10);
 	glBegin(GL_LINES);
-		Point last = Point(-1 + ans[0].first * dx - 0.5 * dx, -1 + ans[0].second * dy - 0.5 * dy, 0.2);
+		Point last = Point(-1 + ans[0].first * dx - 0.5 * dx, -1 + ans[0].second * dy - 0.5 * dy, 0.1 * dx);
 		FOR(i, 1, (int)ans.size()-1){
-			Point cur = Point(-1 + ans[i].first * dx - 0.5 * dx, -1 + ans[i].second * dy - 0.5 * dy, 0.2);
+			Point cur = Point(-1 + ans[i].first * dx - 0.5 * dx, -1 + ans[i].second * dy - 0.5 * dy, 0.1 * dx);
 			glVertex3f(last.x, last.y, last.z);
 			glVertex3f(cur.x, cur.y, cur.z);
 			last = cur;
@@ -81,7 +81,7 @@ void LookAt(){
 	towards = Point(cos(phi) * cos(theta), cos(phi) * sin(theta), sin(phi)) + eye;
 	upView = getUpView(eye, towards);
 	gluLookAt(eye.x, eye.y, eye.z, towards.x, towards.y, towards.z, upView.x, upView.y, upView.z);
-	cerr << (towards-eye).x << " " << (towards-eye).y << " " << (towards-eye).z << endl;
+	//cerr << (towards-eye).x << " " << (towards-eye).y << " " << (towards-eye).z << endl;
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

@@ -3,7 +3,7 @@
 GLfloat winW, winH;
 GLfloat initW = 1000.0, initH = 1000.0;
 GLint state; // 0 static, 1 move
-const int N = 21, M = 21;
+int N = 21, M = 21;
 float dx = 2.0/N, dy = 2.0/M, dh = 2.0/N * 3;
 vector <pii> ans;
 Point eye, towards, upView;

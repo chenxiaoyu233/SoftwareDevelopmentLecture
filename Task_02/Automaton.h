@@ -18,11 +18,13 @@ void mouseButton(int botton, int state, int x, int y);
 void mouseMotion(int x,int y);
 void myReshape(int w,int h);
 void mydisplay();
+void saveGame();
+void loadGame();
 
 extern float winW, winH;
 extern float initW , initH;
 extern int state; // 0 static, 1 move
-extern const int N, M;
+extern int N, M;
 extern float dx, dy, dh;
 extern vector <pii> ans;
 extern Point eye, towards, upView;

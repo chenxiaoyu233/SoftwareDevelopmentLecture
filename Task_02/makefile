@@ -1,5 +1,5 @@
-main: main.cpp solver.o Generator.o Automaton.o Point.o User.o Graph.o Tools.o Light.o
-	g++ main.cpp solver.o Generator.o Automaton.o Point.o User.o Graph.o Tools.o Light.o \
+main: main.cpp solver.o Generator.o Automaton.o Point.o User.o Graph.o Tools.o Light.o File.o
+	g++ main.cpp solver.o Generator.o Automaton.o Point.o User.o Graph.o Tools.o Light.o File.o \
 	-framework OpenGL -framework GLUT -framework Foundation -g -o main.cpp.out
 solver.o: solver.cpp solver.h
 	g++ solver.cpp -c -g
@@ -17,6 +17,8 @@ Tools.o: Tools.cpp Tools.h
 	g++ Tools.cpp -c -g
 Light.o: Light.cpp Light.h
 	g++ Light.cpp -c -g
+File.o: File.cpp Automaton.h
+	g++ File.cpp -c -g
 
 clean: 
 	rm -r *.out* *.o

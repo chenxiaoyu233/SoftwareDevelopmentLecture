@@ -1,6 +1,10 @@
 #include "Automaton.h"
 
 void keyboard(unsigned char key, int x, int y){ 
+	towards = Point(cos(phi) * cos(theta), cos(phi) * sin(theta), 0);
+       	towards = towards / Length(towards) * 0.1 * dx;
+	cerr << towards.x << " "<< towards.y << " " << towards.z << endl;
+	cerr << dx << endl;
 	switch(key){
 		case 'L': 
 			if(!isLight){
@@ -20,16 +24,19 @@ void keyboard(unsigned char key, int x, int y){
 			solver(w, N, M, ans);
 			break;
 		case 'w': 
-			Me.move(0, 1);
+			Me.move(towards.x, towards.y);
 			break;
 		case 's':
-			Me.move(0, -1);
+			towards = towards * -1;
+			Me.move(towards.x, towards.y);
 			break;
 		case 'a':
-			Me.move(-1, 0);
+			towards = Rotate(towards, pi/2);
+			Me.move(towards.x, towards.y);
 			break;
 		case 'd':
-			Me.move(1, 0);
+			towards = Rotate(towards, -pi/2);
+			Me.move(towards.x, towards.y);
 			break;
 		case 'i':
 			phi += pi/180;
@@ -42,6 +49,12 @@ void keyboard(unsigned char key, int x, int y){
 			break;
 		case 'l':
 			theta -= pi/180;
+			break;
+		case 'c':
+			saveGame();
+			break;
+		case 'v': 
+			loadGame();
 			break;
 	}
 }
