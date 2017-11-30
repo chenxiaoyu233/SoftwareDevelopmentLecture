@@ -14,6 +14,7 @@ void Light::setPosition(float x, float y){
 }
 
 extern float dx, dy;
+void Winner();
 void Light::move(float delx, float dely){
 	if(x + delx < -1 || x + delx > 1) return;
 	if(y + dely < -1 || y + dely > 1) return;
@@ -22,6 +23,9 @@ void Light::move(float delx, float dely){
 	if(w[wx][wy] == fWall) return;
 	int Lx = ceil((1.0 + x) / dx);
 	int Ly = ceil((1.0 + y) / dy);
+	if(w[wx][wy] == fEnd){
+		Winner();
+	}
 	if(Lx != wx || Ly != wy){
 		w[wx][wy] = fStart;
 		w[Lx][Ly] = fRoad;

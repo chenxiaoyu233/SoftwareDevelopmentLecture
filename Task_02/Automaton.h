@@ -2,10 +2,12 @@
 #define AUTOMATON_H_
 #include <GLUT/GLUT.h>
 #include <cstdlib>
+#include <string>
 #include <ctime>
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <cstdlib>
 #include "solver.h"
 #include "Generator.h"
 #include "Point.h"
@@ -20,6 +22,7 @@ void myReshape(int w,int h);
 void mydisplay();
 void saveGame();
 void loadGame();
+void Winner();
 
 extern float winW, winH;
 extern float initW , initH;

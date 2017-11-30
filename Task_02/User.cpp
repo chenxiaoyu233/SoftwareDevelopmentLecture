@@ -3,8 +3,6 @@
 void keyboard(unsigned char key, int x, int y){ 
 	towards = Point(cos(phi) * cos(theta), cos(phi) * sin(theta), 0);
        	towards = towards / Length(towards) * 0.1 * dx;
-	cerr << towards.x << " "<< towards.y << " " << towards.z << endl;
-	cerr << dx << endl;
 	switch(key){
 		case 'L': 
 			if(!isLight){

@@ -13,6 +13,24 @@ int zoom;
 Point LMP;
 float theta, phi;
 
+char s[1005];
+void printFile(string name){
+	FILE * in = fopen(name.c_str(), "r");
+	while(fgets(s, 1000, in) != NULL){
+		printf("%s", s);
+	}
+	fclose(in);
+}
+
+void helpFunc() {
+#ifdef __APPLE__
+	system("clear");
+#else
+	system("cls");
+#endif
+	printFile("helpFile");
+}
+
 void init(){
 	glClearColor(0.3, 0.3, 0.3, 0.0);
 	glClearDepth(10.0f);
@@ -20,6 +38,7 @@ void init(){
 	glDepthRange (-10.0f, 10.0f);
 	ans.clear();
 	zoom = 100;
+	helpFunc();
 }
 
 void openGLInit(){
@@ -35,7 +54,13 @@ void openGLInit(){
 	init();
 	glutDisplayFunc(&mydisplay);
 	glutIdleFunc(&mydisplay);
+
 	glutMainLoop();
 }
 
-
+void Winner(){
+	printFile("winFile");
+	cout << "按下任意键继续" << endl;
+	getchar();
+	exit(0);
+}
