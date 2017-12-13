@@ -56,66 +56,88 @@ namespace HAFFMAN{
 	}
 };
 
-namespace IO{
-	struct Input{
-		Byte buffer;
-		int cnt;
+namespace IO{ 
+	//超神读入
+	struct FastInput{
+		size_t cnt, total;
+		Byte *buffer;
+		size_t bfSize;
 		FILE *in;
-		Input(char *name){ 
-			in = fopen(name, "r"); cnt = 8; 
+		FastInput(char *name, size_t bfSize):bfSize(bfSize){
+			in = fopen(name, "r");
+			buffer = new Byte[bfSize];
+			cnt = total = 0;
 		}
-		void reopen(char *name){ 
-			freopen(name, "r", in);
-			cnt = 8;
+		inline bool hasNext(){
+			if(cnt == total){ total = fread(buffer, sizeof(Byte), bfSize, in) << 3; cnt = 0; }
+			return cnt != total;
 		}
-		bool hasNext(){
-			if(cnt == 8) cnt = (fread(&buffer, 1, 1, in) == 1) ? 0 : 8;
-			return cnt != 8;
+		inline bool readBit(){
+			if(!hasNext()) return 0;
+			size_t cntd8 = cnt >> 3;
+			bool ans = buffer[cntd8] >> (cnt - (cntd8 << 3)) & 1; cnt++;
+			return ans;
 		}
-		bool readBit(){
-			if(cnt == 8){ 
-				fread(&buffer, 1, 1, in); 
-				cnt = 0; 
-			}
-			return (buffer >> (cnt++)) & 1;
+		inline Byte readByte(){
+			if(!hasNext()) return 0;
+			Byte ans = buffer[cnt >> 3]; cnt += 8;
+			return ans;
 		}
-		Byte readByte(){ 
-			if(cnt == 8) fread(&buffer, 1, 1, in); cnt = 8;
-			return buffer; 
+		inline void reopen(char *name){ 
+			freopen(name, "r", in); 
+			total = cnt = 0;
 		}
-		~Input(){ fclose(in); }
+		~FastInput(){ 
+			delete[] buffer;
+			fclose(in); 
+		}
 	};
-	struct Output{
-		int cnt;
-		Byte buffer;
+	struct FastOutput{
+		size_t cnt, total;
+		Byte *buffer;
+		size_t bfSize;
 		FILE *out;
-		Output(char *name){ 
-			out = fopen(name, "w"); 
-			buffer = cnt = 0;
-		}
-		void reopen(char *name){ 
-			fclose(out);
+		FastOutput(char *name, size_t bfSize):bfSize(bfSize){
 			out = fopen(name, "w");
-			buffer = cnt = 0;
+			buffer = new Byte[bfSize];
+			memset(buffer, 0, sizeof(Byte) * bfSize);
+			total = bfSize << 3, cnt = 0;
 		}
-		void putBit(bool s){
-			buffer |= s << (cnt++);
-			if(cnt == 8){ 
-				fwrite(&buffer, 1, 1, out); 
-				buffer = cnt = 0; 
-			}
+		inline void reopen(char *name){
+			freopen(name, "w", out);
+			memset(buffer, 0, sizeof(Byte) * bfSize);
+			cnt = 0;
 		}
-		void putByte(Byte s){ fwrite(&s, 1, 1, out); }
-		~Output(){ 
-			if(cnt != 0){ fwrite(&buffer, 1, 1, out); } // 清空缓冲区
-			fclose(out); 
+		inline void clearBuffer(){
+			fwrite(buffer, sizeof(Byte), cnt >> 3, out);
+			memset(buffer, 0, sizeof(Byte) * bfSize);
+			cnt = 0;
+		}
+		inline void checkBuffer(){
+			if(cnt == (bfSize << 3)) clearBuffer();
+		}
+		inline void putBit(bool x){
+			checkBuffer();
+			size_t cntd8 = cnt >> 3;
+			buffer[cntd8] |= x << (cnt - (cntd8 << 3));
+			cnt ++;
+		}
+		inline void putByte(Byte x){
+			checkBuffer();
+			buffer[cnt >> 3] = x;
+			cnt += 8;
+		}
+		~FastOutput(){
+			clearBuffer();
+			delete[] buffer;
+			fclose(out);
 		}
 	};
 };
 
 void Compress(char *from, char *to){
-	IO::Input In(from); 
-	IO::Output Out(to);
+	IO::FastInput In(from, 50000000); 
+	IO::FastOutput Out(to, 50000000);
 
 	HAFFMAN::init();
 	while(In.hasNext()) HAFFMAN::addByte(In.readByte());
@@ -130,8 +152,8 @@ void Compress(char *from, char *to){
 	FOR(i, 0, HAFFMAN::length[256]) Out.putBit(HAFFMAN::wd[256][i]);
 }
 void unCompress(char *from, char *to){
-	IO::Input In(from);
-	IO::Output Out(to);
+	IO::FastInput In(from, 50000000);
+	IO::FastOutput Out(to, 50000000);
 
 	HAFFMAN::init();
 	fread(&(HAFFMAN::cnt), sizeof(int), 256, In.in);
